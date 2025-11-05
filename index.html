@@ -4,14 +4,27 @@
     <meta charset="UTF-8">
     <title>QR Code Test</title>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script>
+        // ✅ 앱스토어 링크 (실제 JoypleSample 앱의 ID로 변경 필요)
+        const APP_STORE_URL = "https://apps.apple.com/app/id1234567890";
+
+        // ✅ 현재 페이지가 유니버설 링크로 열렸을 때, 앱 미설치 시 fallback 처리
+        window.addEventListener("load", () => {
+            // iOS Safari에서 유니버설 링크 클릭 시 앱이 설치되어 있다면 바로 앱이 열립니다.
+            // 앱이 없을 경우, 이 페이지가 열리고 아래 setTimeout이 동작합니다.
+            setTimeout(() => {
+                // 앱 미설치로 감지되면 App Store로 이동
+                window.location.href = APP_STORE_URL;
+            }, 2000); // 2초 뒤 이동 (UX상 너무 빠르지 않게)
+        });
+    </script>
 </head>
 <body>
     <h1>Scan this QR Code with your App</h1>
     <div id="qrcode"></div>
-<br>
-<br>
-<br>
-   <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=1">1 링크로 이동</a></h1>
+    <br><br><br>
+
+    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=1">1 링크로 이동</a></h1>
     <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=2">2 링크로 이동</a></h1>
     <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=3">3 링크로 이동</a></h1>
     <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=4">4 링크로 이동</a></h1>
@@ -19,11 +32,10 @@
     <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=">토큰 없음 링크로 이동</a></h1>
 
     <script>
-        // 여기에 여러분의 앱이 처리할 Universal Link 또는 URL을 넣으세요.
-        var url = "https://qrcode.kimdoyoung.app/qrcode?token=aabbccddeeff";
-        
-        // QR 코드를 생성할 div에 QR 코드를 생성합니다.
-        var qrcode = new QRCode(document.getElementById("qrcode"), {
+        // ✅ QR 코드 생성
+        const url = "https://qrcode.kimdoyoung.app/qrcode?token=aabbccddeeff";
+
+        new QRCode(document.getElementById("qrcode"), {
             text: url,
             width: 300,
             height: 300

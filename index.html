@@ -9,6 +9,8 @@
     <h1>Scan this QR Code with your App</h1>
     <div id="qrcode"></div>
 
+    <a href="https://qrcode.kimdoyoung.app/qrcode?token=abc123">링크로 이동</a>
+
     <script>
         // 여기에 여러분의 앱이 처리할 Universal Link 또는 URL을 넣으세요.
         var url = "https://jungsu201.github.io/qrcode?name=json";
@@ -16,8 +18,8 @@
         // QR 코드를 생성할 div에 QR 코드를 생성합니다.
         var qrcode = new QRCode(document.getElementById("qrcode"), {
             text: url,
-            width: 128,
-            height: 128
+            width: 500,
+            height: 500
         });
     </script>
 </body>

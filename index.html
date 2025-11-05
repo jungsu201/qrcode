@@ -1,52 +1,196 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <title>QR Code Test</title>
   <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-  <script>
-    // ✅ 앱스토어 주소 (실제 JoypleSample 앱의 App Store ID로 교체하세요)
-    const APP_STORE_URL = "https://apps.apple.com/app/id1234567890";
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Pretendard', sans-serif;
+      background: linear-gradient(135deg, #f0f3f7, #e8ecf3);
+      color: #333;
+      text-align: center;
+      margin: 0;
+      padding: 40px 20px;
+    }
 
-    // ✅ iOS 감지 함수
+    h1 {
+      font-size: 1.8rem;
+      color: #222;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    #qrcode {
+      display: inline-block;
+      padding: 15px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    a {
+      text-decoration: none;
+      color: #007aff;
+      font-weight: 600;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 40px;
+    }
+
+    li {
+      margin: 8px 0;
+    }
+
+    /* ✅ 모달 스타일 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 20px;
+      padding: 24px 28px;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      transform: translateY(30px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .modal h2 {
+      font-size: 1.3rem;
+      margin-bottom: 10px;
+      color: #111;
+    }
+
+    .modal p {
+      color: #666;
+      margin-bottom: 24px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-around;
+      gap: 12px;
+    }
+
+    .modal-button {
+      flex: 1;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 0;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .cancel {
+      background: #f1f2f6;
+      color: #333;
+    }
+
+    .confirm {
+      background: #007aff;
+      color: white;
+    }
+
+    .confirm:hover {
+      background: #0064d2;
+    }
+
+    .cancel:hover {
+      background: #e5e6ea;
+    }
+  </style>
+</head>
+<body>
+  <h1>📱 Joyple QR Login Test</h1>
+  <p>아래 QR 코드를 스캔해 앱에서 로그인 테스트를 해보세요.</p>
+  <div id="qrcode"></div>
+
+  <ul>
+    <li><a href="https://qrcode.kimdoyoung.app/qrcode?token=1">토큰 1</a></li>
+    <li><a href="https://qrcode.kimdoyoung.app/qrcode?token=2">토큰 2</a></li>
+    <li><a href="https://qrcode.kimdoyoung.app/qrcode?token=3">토큰 3</a></li>
+    <li><a href="https://qrcode.kimdoyoung.app/qrcode?token=4">토큰 4</a></li>
+    <li><a href="https://qrcode.kimdoyoung.app/qrcode?token=5">토큰 5</a></li>
+    <li><a href="https://qrcode.kimdoyoung.app/qrcode?token=">토큰 없음</a></li>
+  </ul>
+
+  <!-- ✅ 모달 HTML -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <h2>앱이 설치되어 있지 않은 것 같아요</h2>
+      <p>앱을 설치하고 QR 로그인을 진행하시겠어요?</p>
+      <div class="modal-buttons">
+        <button class="modal-button cancel" id="cancelBtn">나중에</button>
+        <button class="modal-button confirm" id="confirmBtn">App Store로 이동</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const APP_STORE_URL = "https://apps.apple.com/app/id1234567890"; // 실제 JoypleSample ID로 교체
+    const modal = document.getElementById("modal");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const confirmBtn = document.getElementById("confirmBtn");
+
     function isIOS() {
-      const ua = window.navigator.userAgent.toLowerCase();
+      const ua = navigator.userAgent.toLowerCase();
       return /iphone|ipad|ipod/.test(ua);
     }
 
-    // ✅ 페이지 로드 시 처리
     window.addEventListener("load", () => {
-      // 모바일 Safari에서만 fallback 실행
       if (isIOS()) {
-        // 앱이 설치되어 있다면 iOS가 이 페이지를 띄우지 않고 바로 앱 실행
-        // 앱이 없으면 이 페이지가 열리고 아래 fallback 실행
+        // 앱 설치 안 되어 있을 때만 모달 표시
         setTimeout(() => {
-          window.location.href = APP_STORE_URL;
+          modal.classList.add("active");
         }, 2000);
       } else {
-        console.log("🖥️ iOS가 아니므로 App Store 리디렉션 생략");
+        console.log("🖥️ iOS 아님 — fallback 비활성화");
       }
     });
-  </script>
-</head>
-<body>
-  <h1>Scan this QR Code with your App</h1>
-  <div id="qrcode"></div>
-  <br><br><br>
 
-  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=1">1 링크로 이동</a></h1>
-  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=2">2 링크로 이동</a></h1>
-  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=3">3 링크로 이동</a></h1>
-  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=4">4 링크로 이동</a></h1>
-  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=5">5 링크로 이동</a></h1>
-  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=">토큰 없음 링크로 이동</a></h1>
+    cancelBtn.addEventListener("click", () => {
+      modal.classList.remove("active");
+    });
 
-  <script>
+    confirmBtn.addEventListener("click", () => {
+      window.location.href = APP_STORE_URL;
+    });
+
     // ✅ QR 코드 생성
-    const url = "https://qrcode.kimdoyoung.app/qrcode?token=aabbccddeeff";
-
     new QRCode(document.getElementById("qrcode"), {
-      text: url,
+      text: "https://qrcode.kimdoyoung.app/qrcode?token=aabbccddeeff",
       width: 300,
       height: 300
     });

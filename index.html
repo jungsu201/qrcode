@@ -1,45 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>QR Code Test</title>
-    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
-    <script>
-        // ✅ 앱스토어 링크 (실제 JoypleSample 앱의 ID로 변경 필요)
-        const APP_STORE_URL = "https://apps.apple.com/app/id1234567890";
+  <meta charset="UTF-8">
+  <title>QR Code Test</title>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+  <script>
+    // ✅ 앱스토어 주소 (실제 JoypleSample 앱의 App Store ID로 교체하세요)
+    const APP_STORE_URL = "https://apps.apple.com/app/id1234567890";
 
-        // ✅ 현재 페이지가 유니버설 링크로 열렸을 때, 앱 미설치 시 fallback 처리
-        window.addEventListener("load", () => {
-            // iOS Safari에서 유니버설 링크 클릭 시 앱이 설치되어 있다면 바로 앱이 열립니다.
-            // 앱이 없을 경우, 이 페이지가 열리고 아래 setTimeout이 동작합니다.
-            setTimeout(() => {
-                // 앱 미설치로 감지되면 App Store로 이동
-                // window.location.href = APP_STORE_URL;
-            }, 2000); // 2초 뒤 이동 (UX상 너무 빠르지 않게)
-        });
-    </script>
+    // ✅ iOS 감지 함수
+    function isIOS() {
+      const ua = window.navigator.userAgent.toLowerCase();
+      return /iphone|ipad|ipod/.test(ua);
+    }
+
+    // ✅ 페이지 로드 시 처리
+    window.addEventListener("load", () => {
+      // 모바일 Safari에서만 fallback 실행
+      if (isIOS()) {
+        // 앱이 설치되어 있다면 iOS가 이 페이지를 띄우지 않고 바로 앱 실행
+        // 앱이 없으면 이 페이지가 열리고 아래 fallback 실행
+        setTimeout(() => {
+          window.location.href = APP_STORE_URL;
+        }, 2000);
+      } else {
+        console.log("🖥️ iOS가 아니므로 App Store 리디렉션 생략");
+      }
+    });
+  </script>
 </head>
 <body>
-    <h1>Scan this QR Code with your App</h1>
-    <div id="qrcode"></div>
-    <br><br><br>
+  <h1>Scan this QR Code with your App</h1>
+  <div id="qrcode"></div>
+  <br><br><br>
 
-    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=1">1 링크로 이동</a></h1>
-    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=2">2 링크로 이동</a></h1>
-    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=3">3 링크로 이동</a></h1>
-    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=4">4 링크로 이동</a></h1>
-    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=5">5 링크로 이동</a></h1>
-    <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=">토큰 없음 링크로 이동</a></h1>
+  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=1">1 링크로 이동</a></h1>
+  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=2">2 링크로 이동</a></h1>
+  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=3">3 링크로 이동</a></h1>
+  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=4">4 링크로 이동</a></h1>
+  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=5">5 링크로 이동</a></h1>
+  <h1><a href="https://qrcode.kimdoyoung.app/qrcode?token=">토큰 없음 링크로 이동</a></h1>
 
-    <script>
-        // ✅ QR 코드 생성
-        const url = "https://qrcode.kimdoyoung.app/qrcode?token=aabbccddeeff";
+  <script>
+    // ✅ QR 코드 생성
+    const url = "https://qrcode.kimdoyoung.app/qrcode?token=aabbccddeeff";
 
-        new QRCode(document.getElementById("qrcode"), {
-            text: url,
-            width: 300,
-            height: 300
-        });
-    </script>
+    new QRCode(document.getElementById("qrcode"), {
+      text: url,
+      width: 300,
+      height: 300
+    });
+  </script>
 </body>
 </html>

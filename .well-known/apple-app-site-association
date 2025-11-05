@@ -6,6 +6,12 @@
         "paths": [
           "*" 
         ]
+      },
+{
+        "appIDs": ["8EKE36N4HH.com.joycity.platform.sample"],
+        "paths": [
+          "*" 
+        ]
       }
     ]
   }

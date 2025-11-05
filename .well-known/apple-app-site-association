@@ -2,13 +2,10 @@
   "applinks": {
     "details": [
       {
-        "appIDs": ["87WS4ARQXB.com.joycity.platform.sample"],
-        "paths": [
-          "*" 
-        ]
-      },
-{
-        "appIDs": ["8EKE36N4HH.com.joycity.platform.sample"],
+        "appIDs": [
+          "87WS4ARQXB.com.joycity.platform.sample",
+          "8EKE36N4HH.com.joycity.platform.sample"
+        ],
         "paths": [
           "*" 
         ]

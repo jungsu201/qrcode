@@ -1,0 +1,12 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["87WS4ARQXB.com.joycity.platform.sample"],
+        "paths": [
+          "*" 
+        ]
+      }
+    ]
+  }
+}

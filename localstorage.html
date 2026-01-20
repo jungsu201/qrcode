@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>LocalStorage Nonce 저장</title>
+</head>
+<body>
+<h1>LocalStorage Nonce 저장 데모</h1>
+<div id="nonce-display">Nonce 값이 여기에 표시됩니다.</div>
+<button onclick="clearNonce()">Nonce 삭제</button>
+<script>
+	// 페이지 로드 시 nonce 생성 및 저장 (성능 최적화: 단일 UUID 생성)
+	function generateNonce() {
+		return 'nonce_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+	}
+
+	function initNonce() {
+		let nonce = localStorage.getItem('page_nonce');
+		if (!nonce) {
+			nonce = generateNonce();
+			localStorage.setItem('page_nonce', nonce);
+			console.log('새 nonce 생성:', nonce);
+		}
+		document.getElementById('nonce-display').textContent = `현재 Nonce: ${nonce}`;
+	}
+
+	function clearNonce() {
+		localStorage.removeItem('page_nonce');
+		document.getElementById('nonce-display').textContent = 'Nonce가 삭제되었습니다. 페이지를 새로고침하세요.';
+	}
+
+	// DOM 로드 완료 후 실행 (가독성 향상)
+	document.addEventListener('DOMContentLoaded', initNonce);
+</script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Cookie Nonce 저장</title>
+</head>
+<body>
+<h1>Cookie Nonce 저장 데모</h1>
+<div id="nonce-display">Nonce 값이 여기에 표시됩니다.</div>
+<button onclick="clearCookieNonce()">Cookie Nonce 삭제</button>
+<script>
+	// 동일한 nonce 생성 로직 재사용 (코드 중복 방지)
+	function generateNonce() {
+		return 'nonce_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+	}
+
+	function getCookie(name) {
+		const value = `; ${document.cookie}`;
+		const parts = value.split(`; ${name}=`);
+		if (parts.length === 2) return parts.pop().split(';').shift();
+		return null;
+	}
+
+	function initCookieNonce() {
+		let nonce = getCookie('page_nonce');
+		if (!nonce) {
+			nonce = generateNonce();
+			// Secure, SameSite=Strict 설정 (보안 강화)
+			document.cookie = `page_nonce=${nonce}; Secure; SameSite=Strict; path=/; max-age=3600`;
+			console.log('새 cookie nonce 생성:', nonce);
+		}
+		document.getElementById('nonce-display').textContent = `현재 Cookie Nonce: ${nonce}`;
+	}
+
+	function clearCookieNonce() {
+		document.cookie = 'page_nonce=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+		document.getElementById('nonce-display').textContent = 'Cookie Nonce가 삭제되었습니다. 페이지를 새로고침하세요.';
+	}
+
+	document.addEventListener('DOMContentLoaded', initCookieNonce);
+</script>
+</body>
+</html>
